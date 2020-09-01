@@ -106,6 +106,28 @@ class TestClass
 		}
 
 		[Fact]
+		public async void DoesNotFindWarning_Fixed()
+		{
+			var source = @"
+using Xunit;
+
+class TestClass
+{
+	[Theory]
+	[InlineData(new char[] { 'a' })]
+	public static unsafe void FixedBlockUnusedValue(char[] valueArray)
+	{
+		fixed (char* value = valueArray)
+		{
+			Assert.Equal('a', *value);
+		}
+	}
+}";
+
+			await Verify.VerifyAnalyzerAsync(source);
+		}
+
+		[Fact]
 		public async void DoesNotFindWarning_ParameterRead()
 		{
 			var source = @"
